@@ -1,0 +1,185 @@
+/* === BASE === */
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #111827;
+  color: #f3f4f6;
+  padding: 1rem;
+  padding-bottom: 4rem; /* room for nav */
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  margin: 0.5rem 0 1rem;
+  color: #facc15;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+.hidden {
+  display: none !important;
+}
+
+/* === FORM ELEMENTS === */
+label {
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+  display: block;
+  color: #d1d5db;
+}
+input, select, textarea {
+  width: 100%;
+  padding: 0.5rem;
+  background: #1f2937;
+  color: #f3f4f6;
+  border: 1px solid #374151;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* === BUTTONS === */
+button {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #1e40af;
+}
+#toggleFiltersBtn {
+  margin-bottom: 1rem;
+}
+
+/* === FILTERS & SORT === */
+.filterSortPanel {
+  background: #1e293b;
+  padding: 1rem;
+  border-radius: 1rem;
+  margin-bottom: 1.5rem;
+}
+.filterGroup {
+  margin-bottom: 1rem;
+}
+.filterGroup label {
+  margin-right: 0.75rem;
+  display: inline-block;
+}
+
+/* === VEHICLE GROUP === */
+.vehicleGroup {
+  margin-bottom: 2rem;
+}
+.vehicleGroup h2 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: #38bdf8;
+}
+
+/* === VEHICLE CARDS === */
+.vehicleList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.vehicleCard {
+  background-color: #1e293b;
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease;
+}
+.vehicleCard:hover {
+  transform: scale(1.02);
+}
+.vehicleThumb {
+  width: 100%;
+  border-radius: 0.5rem;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+}
+.vehicleInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.vehicleInfo h3 {
+  font-size: 1rem;
+  color: #facc15;
+  margin: 0;
+}
+.vehicleInfo p {
+  font-size: 0.8rem;
+  margin: 0;
+  color: #d1d5db;
+}
+
+/* === GALLERY (vehicle-single) === */
+#imageGallery {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+#imageGallery img {
+  height: 140px;
+  border-radius: 0.5rem;
+}
+
+/* === STAT LISTS === */
+#specList,
+#maintenanceList,
+#documentList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+#specList li,
+#maintenanceList li,
+#documentList li {
+  background-color: #1e293b;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  font-size: 0.85rem;
+  color: #f3f4f6;
+  line-height: 1.4;
+}
+
+/* === NAVIGATION === */
+.bottomNav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1f2937;
+  display: flex;
+  justify-content: space-around;
+  padding: 0.6rem 0;
+  border-top: 1px solid #374151;
+  z-index: 1000;
+}
+.navItem {
+  font-size: 1.5rem;
+  color: #f3f4f6;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+.navItem:hover {
+  transform: scale(1.2);
+}
+.version {
+  font-size: 10px;
+  color: #1f2937;
+}

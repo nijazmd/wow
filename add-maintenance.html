@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Maintenance</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <h1>Add Maintenance</h1>
+
+  <!-- Vehicle Selector -->
+  <div class="formGroup">
+    <label for="vehicleSelect">Select Vehicle:</label>
+    <select id="vehicleSelect"></select>
+  </div>
+
+  <!-- Maintenance Form -->
+  <form id="maintenanceForm" class="formGroup">
+    <label for="maintDate">Date:
+      <input type="date" id="maintDate" required />
+    </label>
+
+    <label for="maintOdometer">Odometer:
+      <input type="number" id="maintOdometer" required />
+    </label>
+
+    <div id="serviceItemsContainer"></div>
+
+    <button type="button" id="addServiceItemBtn">Add Another Service</button>
+    <button type="submit">Submit Maintenance</button>
+  </form>
+
+  <nav class="bottomNav">
+  <a href="index.html" class="navItem">🏠</a>
+  <a href="add-maintenance.html" class="navItem">🛠️</a>
+  <a href="add-document.html" class="navItem">📄</a>
+</nav>
+
+
+  <script src="js/common.js"></script>
+  <script src="js/data-fetch.js"></script>
+  <script src="js/add.js"></script>
+</body>
+</html>

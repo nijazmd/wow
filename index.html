@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vehicle List</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <h1>My Vehicles</h1>
+
+  <!-- 🔘 Toggle Button -->
+  <button id="toggleFiltersBtn">Show Filters & Sort</button>
+
+  <!-- 🔍 Filter + Sort Panel (Hidden by Default) -->
+  <section class="filterSortPanel hidden">
+    <div class="filters">
+      <div id="filterMakeGroup" class="filterGroup"><strong>Make:</strong></div>
+      <div id="filterCategoryGroup" class="filterGroup"><strong>Category:</strong></div>
+      <div id="filterClassGroup" class="filterGroup"><strong>Class:</strong></div>
+      <div id="filterFuelTypeGroup" class="filterGroup"><strong>Fuel Type:</strong></div>
+      <div id="filterDrivetrainGroup" class="filterGroup"><strong>Drivetrain:</strong></div>
+      <div id="filterGearboxGroup" class="filterGroup"><strong>Gearbox:</strong></div>
+      <div id="filterColorGroup" class="filterGroup"><strong>Colors:</strong></div>
+      <div id="filterOwnerGroup" class="filterGroup"><strong>Owner(s):</strong></div>
+      <div id="filterRcOwnerGroup" class="filterGroup"><strong>RC Owner:</strong></div>
+    </div>
+
+    <!-- Sort -->
+    <div class="sort">
+      <label for="sortOption"><strong>Sort by:</strong></label>
+      <select id="sortOption">
+        <option value="">Default</option>
+        <option value="modelYear">Model Year</option>
+        <option value="registrationNumber">Registration Year</option>
+        <option value="owningDate">Owning Date</option>
+        <option value="displacement">Displacement</option>
+        <option value="power">Power</option>
+        <option value="torque">Torque</option>
+        <option value="fuelEconomy">Fuel Economy</option>
+      </select>
+    </div>
+  </section>
+
+  <!-- 🚗 Vehicle Cards -->
+  <section id="vehicleList" class="vehicleList"></section>
+
+  <nav class="bottomNav">
+  <a href="index.html" class="navItem">🏠</a>
+  <a href="add-maintenance.html" class="navItem">🛠️</a>
+  <a href="add-document.html" class="navItem">📄</a>
+</nav>
+
+<div class="version">0.0.1 250523</div>
+
+  <script src="js/common.js"></script>
+  <script src="js/data-fetch.js"></script>
+  <script src="js/index.js"></script>
+</body>
+</html>

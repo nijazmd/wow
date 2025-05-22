@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Document</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <h1>Add Document</h1>
+
+  <div class="formGroup">
+    <label for="vehicleSelect">Select Vehicle:</label>
+    <select id="vehicleSelect"></select>
+  </div>
+
+  <form id="documentForm" class="formGroup">
+    <label for="docType">Document Type:
+      <select id="docType" required>
+        <option value="">-- Select Type --</option>
+        <option value="Insurance">Insurance</option>
+        <option value="PUC">PUC</option>
+        <option value="Tax">Tax</option>
+        <option value="Registration">Registration</option>
+        <option value="Fitness">Fitness</option>
+        <option value="Permit">Permit</option>
+        <!-- Add more if needed -->
+      </select>
+    </label>
+
+    <label for="docIssueDate">Issue Date:
+      <input type="date" id="docIssueDate" required />
+    </label>
+
+    <label for="docExpiryDate">Expiry Date:
+      <input type="date" id="docExpiryDate" required />
+    </label>
+
+    <label for="docFileLink">File Link (optional):
+      <input type="url" id="docFileLink" />
+    </label>
+
+    <label for="docNotes">Notes:
+      <textarea id="docNotes"></textarea>
+    </label>
+
+    <button type="submit">Submit Document</button>
+  </form>
+
+  <nav class="bottomNav">
+  <a href="index.html" class="navItem">🏠</a>
+  <a href="add-maintenance.html" class="navItem">🛠️</a>
+  <a href="add-document.html" class="navItem">📄</a>
+</nav>
+
+
+  <script src="js/common.js"></script>
+  <script src="js/data-fetch.js"></script>
+  <script src="js/document.js"></script>
+</body>
+</html>
