@@ -39,3 +39,6 @@ async function fetchMaintenanceData() {
 async function fetchDocumentsData() {
   return await fetchSheetData('Documents');
 }
+async function fetchServiceIntervals() {
+  return await fetchSheetData('ServiceIntervals');
+}

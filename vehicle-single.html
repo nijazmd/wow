@@ -8,50 +8,72 @@
 </head>
 <body>
 
-  <!-- Header -->
-  <header class="header">
-    <h1 id="vehicleTitle">Vehicle Details</h1>
-  </header>
+  <!-- 🔷 VEHICLE HEADER INFO -->
+  <div class="vehicleHeader">
+    <h1 id="vehicleTitle">Vehicle Name</h1>
+    <div id="regNumber" class="nameplate">MH12AB1234</div>
 
-  <!-- Image Gallery -->
-  <section class="gallery" id="imageGallery">
-    <!-- Images will be populated here -->
-  </section>
+    <!-- 🖼️ Image Gallery -->
+    <div id="imageGallery"></div>
 
-  <!-- Specifications -->
-  <section class="specifications" id="specifications">
-    <h2>Specifications</h2>
-    <ul id="specList">
-      <!-- Specification items will be populated here -->
-    </ul>
-  </section>
+    <!-- 🧭 Current Odometer -->
+    <div class="odometerSection">
+      <span class="odometerLabel">Current Odometer:</span>
+      <span id="odometerValue" class="odometer">—</span>
+      <button id="odoUpdateBtn" class="odometerEdit">Update</button>
+    </div>
+  </div>
 
-  <!-- Maintenance History -->
-  <section class="maintenance" id="maintenance">
-    <h2>Maintenance History</h2>
-    <ul id="maintenanceList">
-      <!-- Maintenance records will be populated here -->
-    </ul>
-  </section>
+  <!-- 🔘 TAB BUTTONS -->
+  <div class="tabContainer">
+    <button class="tabBtn active" data-tab="infoTab">Info</button>
+    <button class="tabBtn" data-tab="maintTab">Maintenance</button>
+    <button class="tabBtn" data-tab="docsTab">Documents</button>
+  </div>
 
-  <!-- Documents -->
-  <section class="documents" id="documents">
-    <h2>Documents</h2>
-    <ul id="documentList">
-      <!-- Document links will be populated here -->
-    </ul>
-  </section>
+  <!-- 📂 TAB PANELS -->
+  <div id="infoTab" class="tabPanel active">
+    <ul id="specList" class="cardGrid"></ul>
+  </div>
 
+  <div id="maintTab" class="tabPanel">
+    <table id="maintenanceTable" class="maintenanceTable">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Last Service Date</th>
+          <th>Last Mileage</th>
+          <th>Next Due Date</th>
+          <th>Next Mileage</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div id="docsTab" class="tabPanel">
+    <ul id="documentList" class="cardGrid"></ul>
+  </div>
+
+  <!-- ✏️ Odometer Update Popup -->
+  <div id="odoPopup" class="popup hidden">
+    <div class="popupContent">
+      <label for="odoInput">Enter New Odometer Reading</label>
+      <input type="number" id="odoInput" />
+      <button id="odoSaveBtn">Save</button>
+      <button id="odoCancelBtn" class="secondary">Cancel</button>
+    </div>
+  </div>
+
+  <!-- 🔗 BOTTOM NAV -->
   <nav class="bottomNav">
-  <a href="index.html" class="navItem">🏠</a>
-  <a href="add-maintenance.html" class="navItem">🛠️</a>
-  <a href="add-document.html" class="navItem">📄</a>
-</nav>
-
+    <a href="index.html" class="navItem">🏠</a>
+    <a href="add-maintenance.html" class="navItem">🛠️</a>
+    <a href="add-document.html" class="navItem">📄</a>
+  </nav>
 
   <script src="js/common.js"></script>
-<script src="js/data-fetch.js"></script>
-<script src="js/vehicle-single.js"></script>
-
+  <script src="js/data-fetch.js"></script>
+  <script src="js/vehicle-single.js"></script>
 </body>
 </html>
