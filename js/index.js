@@ -54,14 +54,28 @@ toggleBtn.addEventListener('click', () => {
     return [...names].sort();
   }
 
-  function populateCheckboxGroup(containerId, options, name) {
-    const container = document.getElementById(containerId);
-    options.forEach(val => {
-      const label = document.createElement('label');
-      label.innerHTML = `<input type="checkbox" name="${name}" value="${val}"> ${val}`;
-      container.appendChild(label);
-    });
-  }
+function populateCheckboxGroup(containerId, options, name) {
+  const container = document.getElementById(containerId);
+  options.forEach(val => {
+    const id = `${name}-${val.replace(/\s+/g, '')}`;
+    
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.name = name;
+    checkbox.value = val;
+    checkbox.id = id;
+    checkbox.classList.add('filterCheckbox');
+
+    const label = document.createElement('label');
+    label.setAttribute('for', id);
+    label.classList.add('filterBtn');
+    label.textContent = val;
+
+    container.appendChild(checkbox);
+    container.appendChild(label);
+  });
+}
+
 
   function getCheckedValues(name) {
     return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(cb => cb.value);
