@@ -4,17 +4,18 @@
 }
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #111827;
-  color: #f3f4f6;
+  font-family: 'Poppins', sans-serif;
+  background-color: #0B0F1A;
+  color: #FFFFFF;
   padding: 1rem;
-  padding-bottom: 4rem; /* room for nav */
+  padding-bottom: 4rem;
 }
 
 h1, h2, h3 {
+  font-size: 1rem;
   font-weight: 600;
   margin: 0.5rem 0 1rem;
-  color: #facc15;
+  color: #00FFB2;
 }
 
 a {
@@ -32,33 +33,38 @@ ul {
 
 /* === FORM ELEMENTS === */
 label {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   margin-bottom: 0.25rem;
   display: block;
-  color: #d1d5db;
+  color: #BBBBBB;
 }
 input, select, textarea {
   width: 100%;
   padding: 0.5rem;
-  background: #1f2937;
-  color: #f3f4f6;
-  border: 1px solid #374151;
+  background: #1A1F2B;
+  color: #FFFFFF;
+  border: 1px solid #2A2F3D;
   border-radius: 0.5rem;
   margin-bottom: 1rem;
 }
 
 /* === BUTTONS === */
 button {
-  background-color: #2563eb;
-  color: white;
+  background-color: #2DD9FE;
+  color: black;
   border: none;
   padding: 0.6rem 1rem;
   border-radius: 0.5rem;
-  font-weight: bold;
+  font-weight: 500;
   cursor: pointer;
+  transition: background 0.3s ease;
 }
 button:hover {
-  background-color: #1e40af;
+  background-color: #00BCE0;
+}
+.secondary {
+  background-color: #333;
+  color: #ccc;
 }
 #toggleFiltersBtn {
   margin-bottom: 1rem;
@@ -66,17 +72,36 @@ button:hover {
 
 /* === FILTERS & SORT === */
 .filterSortPanel {
-  background: #1e293b;
+  background: #151A24;
   padding: 1rem;
   border-radius: 1rem;
   margin-bottom: 1.5rem;
 }
 .filterGroup {
   margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 .filterGroup label {
-  margin-right: 0.75rem;
-  display: inline-block;
+  font-weight: normal;
+  font-size: 0.75rem;
+  padding: 0.4rem 0.6rem;
+  background-color: #1E2635;
+  color: #CCCCCC;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+.filterGroup input[type="checkbox"] {
+  display: none;
+}
+.filterGroup input[type="checkbox"]:checked + label {
+  background-color: #2DD9FE;
+  color: #000;
+}
+.sort label {
+  font-size: 0.75rem;
+  color: #AAAAAA;
 }
 
 /* === VEHICLE GROUP === */
@@ -84,9 +109,9 @@ button:hover {
   margin-bottom: 2rem;
 }
 .vehicleGroup h2 {
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   margin-bottom: 1rem;
-  color: #38bdf8;
+  color: #FF5F1F;
 }
 
 /* === VEHICLE CARDS === */
@@ -97,17 +122,19 @@ button:hover {
 }
 
 .vehicleCard {
-  background-color: #1e293b;
+  position: relative;
+  background-color: #1A1F2B;
   border-radius: 0.75rem;
   padding: 0.75rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  transition: transform 0.2s ease;
+  box-shadow: 0 2px 10px rgba(0, 255, 178, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .vehicleCard:hover {
-  transform: scale(1.02);
+  transform: scale(1.015);
+  box-shadow: 0 0 10px rgba(45, 217, 254, 0.2);
 }
 .vehicleThumb {
   width: 100%;
@@ -121,17 +148,32 @@ button:hover {
   gap: 0.2rem;
 }
 .vehicleInfo h3 {
-  font-size: 1rem;
-  color: #facc15;
+  font-size: 0.9rem;
+  color: #FFFFFF;
   margin: 0;
 }
 .vehicleInfo p {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   margin: 0;
-  color: #d1d5db;
+  color: #CCCCCC;
+}
+.vehicleCard .icon {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 1.3em;
+}
+.vehicleCard .document-icon {
+  right: 30px;
+}
+.maintIcon.orange {
+  color: #FFB02E;
+}
+.maintIcon.red {
+  color: #FF2C55;
 }
 
-/* === GALLERY (vehicle-single) === */
+/* === IMAGE GALLERY === */
 #imageGallery {
   display: flex;
   gap: 0.5rem;
@@ -139,70 +181,26 @@ button:hover {
   margin-bottom: 1rem;
 }
 #imageGallery img {
-  height: 140px;
+  height: 120px;
   border-radius: 0.5rem;
+  flex-shrink: 0;
 }
 
-/* === STAT LISTS === */
-#specList,
-#maintenanceList,
-#documentList {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 1rem;
-}
-#specList li,
-#maintenanceList li,
-#documentList li {
-  display: flex;
-  flex-direction: column;
-  background-color: #1e293b;
-  padding: 0.75rem;
-  border-radius: 0.75rem;
-  font-size: 0.85rem;
-  color: #f3f4f6;
-  line-height: 1.4;
-}
-/* .specList li span {
-  display: block;
-} */
-
-/* === NAVIGATION === */
-.bottomNav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #1f2937;
-  display: flex;
-  justify-content: space-around;
-  padding: 0.6rem 0;
-  border-top: 1px solid #374151;
-  z-index: 1000;
-}
-.navItem {
-  font-size: 1.5rem;
-  color: #f3f4f6;
-  text-decoration: none;
-  transition: transform 0.2s ease;
-}
-.navItem:hover {
-  transform: scale(1.2);
-}
-.version {
-  font-size: 10px;
-  color: #1f2937;
+/* === VEHICLE HEADER === */
+.vehicleHeader h1 {
+  font-size: 1rem;
+  font-weight: 500;
 }
 .nameplate {
-  background: #1e40af;
-  color: #facc15;
-  padding: 0.25rem 0.75rem;
+  background: white;
+  color: black;
+  font-weight: bold;
+  padding: 0.4rem 1rem;
   display: inline-block;
-  border-radius: 0.5rem;
-  font-size: 1rem;
+  border-radius: 0.3rem;
+  font-size: 0.85rem;
   margin-bottom: 0.75rem;
 }
-
 .odometerSection {
   display: flex;
   align-items: center;
@@ -210,30 +208,132 @@ button:hover {
   margin-bottom: 1rem;
 }
 .odometerLabel {
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   color: #9ca3af;
 }
 .odometer {
-  font-size: 1.2rem;
-  color: #f3f4f6;
-  font-weight: bold;
+  font-size: 1.1rem;
+  font-family: 'Courier New', monospace;
+  background: #0f172a;
+  padding: 0.2rem 0.8rem;
+  border-radius: 4px;
+  box-shadow: inset 0 0 5px #000;
+  color: #2DD9FE;
 }
 .odometerEdit {
-  font-size: 0.8rem;
-  padding: 0.25rem 0.5rem;
-  background: #2563eb;
-  border: none;
-  border-radius: 0.25rem;
-  color: white;
+  font-size: 0.75rem;
+  padding: 0.3rem 0.6rem;
+  background: none;
+  border: 1px solid #2DD9FE;
+  border-radius: 4px;
+  color: #2DD9FE;
   cursor: pointer;
 }
+
+/* === TABS === */
+.tabContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.tabBtn {
+  background: #1A1F2B;
+  color: #ccc;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  margin: 0 0.2rem;
+  font-size: 0.75rem;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.tabBtn.active {
+  background: #2DD9FE;
+  color: black;
+  font-weight: 600;
+}
+.tabPanel {
+  display: none;
+}
+.tabPanel.active {
+  display: block;
+}
+
+/* === CARD GRID === */
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+}
+.cardGrid li {
+  display: flex;
+  flex-direction: column;
+  background-color: #1A1F2B;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: white;
+}
+.cardLabel {
+  font-size: 0.7rem;
+  color: #999;
+}
+.cardValue {
+  font-size: 0.9rem;
+  color: #FFFFFF;
+}
+
+/* === TABLES === */
+.maintenanceTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+.maintenanceTable th,
+.maintenanceTable td {
+  padding: 0.6rem;
+  border: 1px solid #333C4F;
+  text-align: center;
+  font-size: 0.75rem;
+}
+.maintenanceTable th {
+  background-color: #1F2937;
+  color: #2DD9FE;
+}
+.maintenanceTable tr:nth-child(even) td {
+  background-color: #151B29;
+}
+.maintenanceTable td {
+  background-color: #1A1F2B;
+}
+
+/* === DOCUMENTS === */
+#documentList.cardGrid li {
+  grid-column: span 2;
+  background-color: #1E1F2F;
+  padding: 1rem;
+}
+
+/* === ALERT BOX === */
+.alertBox {
+  margin: 1rem 0;
+  padding: 1rem;
+  border-left: 4px solid #FFB02E;
+  background-color: #1F2937;
+  color: #FFD580;
+  border-radius: 6px;
+}
+
+/* === POPUP === */
 .popup {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
   align-items: center;
   justify-content: center;
+  z-index: 1000;
 }
 .popupContent {
   background: #1f2937;
@@ -243,8 +343,8 @@ button:hover {
   max-width: 320px;
 }
 .popupContent label {
-  display: block;
-  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+  margin-bottom: 0.4rem;
 }
 .popupContent input {
   width: 100%;
@@ -254,83 +354,88 @@ button:hover {
 .popupContent button {
   margin-right: 0.5rem;
 }
-.secondary {
-  background: #374151;
+
+/* === NAVIGATION === */
+.mainNav {
+  display: flex;
+  justify-content: space-around;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1E1F2F;
+  padding: 0.5rem 0;
+  border-top: 1px solid #333;
+  z-index: 1000;
 }
-.tabPanel {
-  display: none;
+.mainNav a {
+  color: #FFFFFF;
+  text-decoration: none;
+  font-size: 0.75rem;
+  text-align: center;
+  flex: 1;
+}
+.mainNav a::before {
+  content: attr(data-icon);
+  display: block;
+  font-size: 1.2rem;
+  margin-bottom: 0.2rem;
 }
 
-.tabPanel.active {
-  display: block;
+/* === VERSION === */
+.version {
+  font-size: 10px;
+  color: #1f2937;
+  margin-top: 1rem;
+  text-align: center;
 }
-.maintenanceTable {
+/* === SERVICE PAGE TABLES === */
+.tableWrapper {
+  background-color: #151A24;
+  padding: 1rem;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 0 8px rgba(45, 217, 254, 0.05);
+}
+
+#serviceTable,
+#documentTable {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
 }
-.maintenanceTable th,
-.maintenanceTable td {
-  padding: 0.6rem;
-  border: 1px solid #374151;
+
+#serviceTable th,
+#serviceTable td,
+#documentTable th,
+#documentTable td {
+  padding: 0.75rem 0.5rem;
+  border: 1px solid #2c3445;
   text-align: center;
-  font-size: 0.85rem;
-}
-.maintenanceTable th {
-  background-color: #1f2937;
-  color: #facc15;
-}
-.maintenanceTable td {
-  background-color: #1e293b;
-  color: #f3f4f6;
-}
-.sectionHeading {
-  margin-top: 2rem;
-  font-size: 1rem;
-  font-weight: bold;
-  color: #facc15;
-}
-.pageHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 1rem;
-}
-.backBtn {
-  color: #60a5fa;
-  font-size: 0.9rem;
-  text-decoration: none;
-}
-.summaryBox {
-  margin: 1rem;
-  padding: 1rem;
-  background-color: #1f2937;
-  border-radius: 8px;
-  color: #f3f4f6;
-}
-.due-red {
-  background-color: #7f1d1d;
-  color: #fee2e2;
-}
-.due-orange {
-  background-color: #78350f;
-  color: #ffedd5;
-}
-.due-normal {
-  background-color: #1e293b;
+  font-size: 0.75rem;
+  background-color: #1A1F2B;
   color: #f1f5f9;
 }
-.tableWrapper {
-  overflow-x: auto;
-  margin: 1rem;
+
+#serviceTable th,
+#documentTable th {
+  background-color: #1F2937;
+  color: #2DD9FE;
+  font-weight: 600;
+}
+
+#serviceTable tr:nth-child(even) td,
+#documentTable tr:nth-child(even) td {
+  background-color: #151B29;
 }
 
 .detailsRow td {
   background-color: #0f172a;
   padding: 1rem;
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   color: #f1f5f9;
 }
+
 .detailsRow ul {
   list-style: none;
   padding-left: 1rem;
@@ -339,81 +444,66 @@ button:hover {
 .detailsRow li {
   margin-bottom: 0.4rem;
 }
-.issueList {
-  list-style: none;
-  padding-left: 0;
+
+/* Due colors */
+.due-red {
+  background-color: #7f1d1d !important;
+  color: #fee2e2 !important;
 }
-.issueList li {
-  margin-bottom: 0.75rem;
-  padding: 0.75rem;
-  background-color: #1e293b;
-  border-left: 4px solid #f59e0b;
-  border-radius: 6px;
+.due-orange {
+  background-color: #78350f !important;
+  color: #ffedd5 !important;
 }
-.maintIcon {
-  float: right;
-  font-size: 1.2em;
-  margin-left: 5px;
-}
-.maintIcon.orange {
-  color: orange;
-}
-.maintIcon.red {
-  color: red;
-}
-.mainNav {
-  display: flex;
-  justify-content: space-around;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #1e1e2f;
-  padding: 10px 0;
-  border-top: 1px solid #333;
-  z-index: 1000;
+.due-normal {
+  background-color: #1e293b !important;
+  color: #f1f5f9 !important;
 }
 
-.mainNav a {
-  color: #eee;
-  text-decoration: none;
-  font-size: 1.1em;
-  text-align: center;
-  flex: 1;
-}
-
-.mainNav a:hover {
-  background: #2c2c3c;
-}
+/* Add Button Row */
 .buttonRow {
   text-align: right;
-  margin: 1rem 0 2rem;
+  margin: 1rem 0;
 }
-
 .actionBtn {
-  background: #4caf50;
-  color: white;
-  padding: 0.6rem 1.2rem;
+  background: #2DD9FE;
+  color: black;
+  padding: 0.5rem 1rem;
   border-radius: 6px;
-  text-decoration: none;
-  font-weight: bold;
+  font-size: 0.75rem;
+  font-weight: 500;
   display: inline-block;
+  text-decoration: none;
+  transition: background 0.2s;
 }
-
 .actionBtn:hover {
-  background: #45a045;
+  background: #00BCE0;
 }
-.vehicleCard {
-  position: relative;
-}
-
-.vehicleCard .icon {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  font-size: 1.4em;
+/* === FILTER BUTTONS === */
+.filterCheckbox {
+  display: none; /* hide actual checkbox */
 }
 
-.vehicleCard .document-icon {
-  right: 30px; /* Push aside if both icons are shown */
+.filterBtn {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  margin: 0.2rem;
+  font-size: 0.75rem;
+  color: #d1d5db;
+  background-color: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.filterCheckbox:checked + .filterBtn {
+  background-color: #facc15;
+  color: #000;
+  border-color: #facc15;
+  font-weight: bold;
+}
+.filterBtn:hover {
+  background-color: #334155;
+  border-color: #475569;
 }
