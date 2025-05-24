@@ -116,9 +116,10 @@ button:hover {
 
 /* === VEHICLE CARDS === */
 .vehicleList {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 1rem;
+  text-decoration: inherit;
+  /* display: grid; */
+  /* grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem; */
 }
 
 .vehicleCard {
@@ -506,4 +507,39 @@ button:hover {
 .filterBtn:hover {
   background-color: #334155;
   border-color: #475569;
+}
+.popup {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hidden {
+  display: none !important;
+}
+.popup {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.popup:not(.hidden) {
+  opacity: 1;
+  pointer-events: all;
+}
+.vehicleGroup {
+  margin-bottom: 2rem;
+}
+
+.vehicleGroup h2 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: #38bdf8;
+}
+
+.vehicleGroup .vehicleList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
 }
