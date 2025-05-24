@@ -16,7 +16,7 @@ async function fetchSheetData(sheetName) {
     const entries = data.values.slice(1).map(row => {
       const obj = {};
       headers.forEach((header, i) => {
-        obj[header] = row[i] || '';
+        obj[header] = i < row.length ? row[i] : '';
       });
       return obj;
     });
@@ -41,4 +41,7 @@ async function fetchDocumentsData() {
 }
 async function fetchServiceIntervals() {
   return await fetchSheetData('ServiceIntervals');
+}
+async function fetchIssues() {
+  return await fetchSheetData('IssueReports');
 }

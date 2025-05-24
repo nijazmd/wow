@@ -1,11 +1,12 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const vehicleID = getQueryParam('vehicleID');
 
-  const [vehicles, maintenance, documents, serviceIntervals] = await Promise.all([
+  const [vehicles, maintenance, documents, serviceIntervals, issues] = await Promise.all([
     fetchVehicleData(),
     fetchMaintenanceData(),
     fetchDocumentsData(),
-    fetchServiceIntervals()
+    fetchServiceIntervals(),
+    fetchIssues()
   ]);
 
   const vehicle = vehicles.find(v => v.vehicleID === vehicleID);
@@ -18,7 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('vehicleTitle').textContent = `${vehicle.make} ${vehicle.vehicleName}`;
   document.getElementById('regNumber').textContent = vehicle.registrationNumber || '—';
 
-  // Gallery
+  // Image Gallery
   const gallery = document.getElementById('imageGallery');
   for (let i = 1; i <= 5; i++) {
     const img = document.createElement('img');
@@ -27,9 +28,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     gallery.appendChild(img);
   }
 
-  // Odometer value (from localStorage or maintenance)
-  const odoKey = `odometer_${vehicleID}`;
-  let odometerValue = localStorage.getItem(odoKey);
+  // Odometer
+  let odometerValue = vehicle.CurrentOdometer || '';
   if (!odometerValue) {
     const vehicleMaint = maintenance.filter(m => m.vehicleID === vehicleID);
     const latest = vehicleMaint.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   document.getElementById('odometerValue').textContent = odometerValue;
 
-  // Odometer popup logic
+  // Odometer popup
   const odoPopup = document.getElementById('odoPopup');
   const odoInput = document.getElementById('odoInput');
   document.getElementById('odoUpdateBtn').addEventListener('click', () => {
@@ -49,36 +49,38 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   document.getElementById('odoSaveBtn').addEventListener('click', async () => {
-  const newOdo = odoInput.value;
-  if (!newOdo || isNaN(newOdo)) {
-    alert('Please enter a valid number');
-    return;
-  }
+    const newOdo = odoInput.value;
+    if (!newOdo || isNaN(newOdo)) {
+      alert('Please enter a valid number');
+      return;
+    }
 
-  const params = new URLSearchParams();
-  params.append('type', 'updateOdometer');
-  params.append('vehicleID', vehicleID);
-  params.append('odometer', newOdo);
+    const params = new URLSearchParams();
+    params.append('type', 'updateOdometer');
+    params.append('vehicleID', vehicleID);
+    params.append('odometer', newOdo);
 
-  try {
-    await fetch('https://script.google.com/macros/s/AKfycbyD89HHxv2EIytHw-SkCnSYCK3w07HLQ24anzoUXiJnFE-l5Z05urBByqxV7fL22II5Rg/exec', {
-      method: 'POST',
-      mode: 'no-cors',
-      body: params
-    });
+    try {
+      const response = await fetch('https://script.google.com/macros/s/AKfycbyD89HHxv2EIytHw-SkCnSYCK3w07HLQ24anzoUXiJnFE-l5Z05urBByqxV7fL22II5Rg/exec', {
+        method: 'POST',
+        body: params
+      });
 
-    localStorage.setItem(odoKey, newOdo);
-    document.getElementById('odometerValue').textContent = newOdo;
-    odoPopup.classList.add('hidden');
-    renderMaintenanceCards();
-    alert('Odometer updated successfully.');
-  } catch (err) {
-    console.error(err);
-    alert('Failed to update odometer.');
-  }
-});
-
-
+      const text = await response.text();
+      if (text.includes("updated")) {
+        document.getElementById('odometerValue').textContent = newOdo;
+        odoPopup.classList.add('hidden');
+        odometerValue = newOdo; // update local variable
+        renderMaintenanceCards();
+        alert('Odometer updated successfully.');
+      } else {
+        alert('Failed to update odometer: ' + text);
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Failed to update odometer.');
+    }
+  });
 
   // Tabs logic
   document.querySelectorAll('.tabBtn').forEach(btn => {
@@ -119,72 +121,117 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Maintenance
-  const maintenanceList = document.getElementById('maintenanceList');
   const vehicleMaint = maintenance.filter(m => m.vehicleID === vehicleID);
   const intervals = serviceIntervals.filter(i => i.vehicleID === vehicleID);
+
   function renderMaintenanceCards() {
-  const tableBody = document.querySelector('#maintenanceTable tbody');
-  tableBody.innerHTML = '';
-  const alerts = [];
-  const odo = parseInt(localStorage.getItem(odoKey) || '0');
-  const today = new Date();
+    const tableBody = document.querySelector('#maintenanceTable tbody');
+    tableBody.innerHTML = '';
+    const alerts = [];
+    const odo = parseInt(odometerValue || '0');
+    const today = new Date();
 
-  if (intervals.length === 0) {
-    const row = document.createElement('tr');
-    row.innerHTML = `<td colspan="5">No service interval configured.</td>`;
-    tableBody.appendChild(row);
-    return;
-  }
-
-  intervals.forEach(interval => {
-    const { component, intervalKM, intervalDays } = interval;
-    const history = vehicleMaint
-      .filter(m => m.serviceType === component)
-      .sort((a, b) => new Date(b.date) - new Date(a.date));
-    const last = history[0];
-
-    let lastDate = last?.date || '—';
-    let lastOdo = last?.odometer || '—';
-    let lastOdoParsed = last?.odometer ? parseInt(last.odometer) : null;
-let dueKM = lastOdoParsed !== null && !isNaN(intervalKM) 
-  ? lastOdoParsed + parseInt(intervalKM) 
-  : '—';
-
-    
-    let dueDate = last?.date
-      ? new Date(new Date(last.date).getTime() + intervalDays * 86400000).toLocaleDateString()
-      : '—';
-
-    if (dueKM !== '—' && parseInt(dueKM) - odo <= 500) {
-      alerts.push(`⚠️ ${component} due soon`);
+    if (intervals.length === 0) {
+      const row = document.createElement('tr');
+      row.innerHTML = `<td colspan="5">No service interval configured.</td>`;
+      tableBody.appendChild(row);
+      return;
     }
 
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${component}</td>
-      <td>${lastDate}</td>
-      <td>${lastOdo}</td>
-      <td>${dueDate}</td>
-      <td>${dueKM}</td>
-    `;
-    tableBody.appendChild(tr);
-  });
+    intervals.forEach(interval => {
+      const { component, intervalKM, intervalDays } = interval;
+      const history = vehicleMaint
+        .filter(m => m.serviceType === component)
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+      const last = history[0];
 
-  // Show alert if any
-  const alertBox = document.querySelector('.alertBox');
-  if (alerts.length) {
-    if (!alertBox) {
-      const newAlert = document.createElement('div');
-      newAlert.className = 'alertBox';
-      newAlert.innerHTML = alerts.map(a => `<p>${a}</p>`).join('');
-      maintenanceTable.parentElement.prepend(newAlert);
-    } else {
-      alertBox.innerHTML = alerts.map(a => `<p>${a}</p>`).join('');
+      let lastDate = last?.date || '—';
+      let lastOdo = last?.odometer || '—';
+      let lastOdoParsed = last?.odometer ? parseInt(last.odometer) : null;
+      let dueKM = lastOdoParsed !== null && !isNaN(intervalKM)
+        ? lastOdoParsed + parseInt(intervalKM)
+        : '—';
+
+      let dueDate = last?.date
+        ? new Date(new Date(last.date).getTime() + intervalDays * 86400000).toLocaleDateString()
+        : '—';
+
+      const odoDiff = dueKM !== '—' ? parseInt(dueKM) - odo : null;
+      const dueDateObj = last?.date ? new Date(last.date) : null;
+      const dateDiff = dueDateObj ? Math.ceil((new Date(dueDateObj.getTime() + intervalDays * 86400000) - today) / 86400000) : null;
+
+      if ((odoDiff !== null && odoDiff <= 0) || (dateDiff !== null && dateDiff <= 0)) {
+        alerts.push(`❗ ${component} due`);
+      } else if ((odoDiff !== null && odoDiff <= 1000) || (dateDiff !== null && dateDiff <= 30)) {
+        alerts.push(`⚠️ ${component} due soon`);
+      }
+
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${component}</td>
+        <td>${lastDate}</td>
+        <td>${lastOdo}</td>
+        <td>${dueDate}</td>
+        <td>${dueKM}</td>
+      `;
+      tableBody.appendChild(tr);
+    });
+
+    const alertBox = document.querySelector('.alertBox');
+    if (alerts.length) {
+      if (!alertBox) {
+        const newAlert = document.createElement('div');
+        newAlert.className = 'alertBox';
+        newAlert.innerHTML = alerts.map(a => `<p>${a}</p>`).join('');
+        maintenanceTable.parentElement.prepend(newAlert);
+      } else {
+        alertBox.innerHTML = alerts.map(a => `<p>${a}</p>`).join('');
+      }
     }
   }
-}
+
+  renderIssueReports();
+  function renderIssueReports() {
+    const issueList = document.getElementById('issueList');
+    const reports = issues.filter(i => i.vehicleID === vehicleID);
+    if (reports.length === 0) {
+      issueList.innerHTML = '<li>No issues reported.</li>';
+      return;
+    }
+    reports.sort((a, b) => new Date(b.date) - new Date(a.date));
+    reports.forEach(r => {
+      const li = document.createElement('li');
+      li.innerHTML = `<strong>${r.date}</strong> ${r.reporter ? `by ${r.reporter}` : ''}<br>${r.issue}`;
+      issueList.appendChild(li);
+    });
+  }
 
   renderMaintenanceCards();
+  renderMaintenanceHistory();
+
+  function renderMaintenanceHistory() {
+    const tableBody = document.querySelector('#maintenanceHistoryTable tbody');
+    tableBody.innerHTML = '';
+    const grouped = {};
+
+    vehicleMaint.forEach(entry => {
+      const odo = entry.odometer || '—';
+      if (!grouped[odo]) grouped[odo] = { date: entry.date, cost: 0 };
+      grouped[odo].cost += parseFloat(entry.cost || 0);
+    });
+
+    Object.keys(grouped).sort((a, b) => parseInt(b) - parseInt(a)).forEach(odo => {
+      const { date, cost } = grouped[odo];
+      const row = document.createElement('tr');
+      row.innerHTML = `<td>${odo} km</td><td>${date}</td><td>₹ ${cost.toLocaleString()}</td>`;
+      row.style.cursor = 'pointer';
+      row.addEventListener('click', () => {
+        window.location.href = `maintenance-detail.html?vehicleID=${vehicleID}&odo=${odo}`;
+      });
+      tableBody.appendChild(row);
+    });
+  }
 
   // Documents
   const documentList = document.getElementById('documentList');
@@ -196,7 +243,6 @@ let dueKM = lastOdoParsed !== null && !isNaN(intervalKM)
     docRecords.forEach(doc => {
       const expiry = new Date(doc.expiryDate);
       const remainingDays = Math.ceil((expiry - today) / 86400000);
-
       const li = document.createElement('li');
       li.innerHTML = `
         <span class="cardLabel">${doc.documentType}</span>
@@ -204,14 +250,12 @@ let dueKM = lastOdoParsed !== null && !isNaN(intervalKM)
           Expiry: ${doc.expiryDate} (${remainingDays} days)<br>
           ${doc.fileLink ? `<a href="${doc.fileLink}" target="_blank">View</a><br>` : ''}
           ${doc.notes ? `<small>${doc.notes}</small>` : ''}
-        </span>
-      `;
+        </span>`;
       documentList.appendChild(li);
     });
   }
 });
 
-// Load service intervals via API key method
 async function fetchServiceIntervals() {
   return await fetchSheetData('ServiceIntervals');
 }

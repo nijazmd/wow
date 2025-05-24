@@ -18,7 +18,7 @@
 
     <!-- 🧭 Current Odometer -->
     <div class="odometerSection">
-      <span class="odometerLabel">Current Odometer:</span>
+      <span class="odometerLabel">Odometer:</span>
       <span id="odometerValue" class="odometer">—</span>
       <button id="odoUpdateBtn" class="odometerEdit">Update</button>
     </div>
@@ -37,19 +37,37 @@
   </div>
 
   <div id="maintTab" class="tabPanel">
+    <h3 class="sectionHeading">Reported Issues</h3>
+    <ul id="issueList" class="issueList"></ul>
+
+    <h3>Maintenance by Parts</h3>
     <table id="maintenanceTable" class="maintenanceTable">
       <thead>
         <tr>
           <th>Item</th>
-          <th>Last Service Date</th>
+          <th>Last Service On</th>
           <th>Last Mileage</th>
-          <th>Next Due Date</th>
-          <th>Next Mileage</th>
+          <th>Next Due</th>
+          <th>Next Service</th>
         </tr>
       </thead>
       <tbody></tbody>
     </table>
+    <h3 class="sectionHeading">Full Maintenance History</h3>
+  <table id="maintenanceHistoryTable" class="maintenanceTable">
+    <thead>
+      <tr>
+        <th>Odometer</th>
+        <th>Date</th>
+        <th>Total Cost</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
   </div>
+
+  
+
 
   <div id="docsTab" class="tabPanel">
     <ul id="documentList" class="cardGrid"></ul>
@@ -64,13 +82,12 @@
       <button id="odoCancelBtn" class="secondary">Cancel</button>
     </div>
   </div>
+<nav class="mainNav">
+  <a href="index.html">🏠 Home</a>
+  <a href="service.html">🛠️ Service</a>
+  <a href="report-issue.html">🚗❗ Report</a>
+</nav>
 
-  <!-- 🔗 BOTTOM NAV -->
-  <nav class="bottomNav">
-    <a href="index.html" class="navItem">🏠</a>
-    <a href="add-maintenance.html" class="navItem">🛠️</a>
-    <a href="add-document.html" class="navItem">📄</a>
-  </nav>
 
   <script src="js/common.js"></script>
   <script src="js/data-fetch.js"></script>

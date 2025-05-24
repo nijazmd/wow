@@ -1,0 +1,317 @@
+
+/* === Global Variables & Reset === */
+:root {
+  --bg-color: #0a0f1c;
+  --card-bg: #121827;
+  --accent: #00d1ff;
+  --warning: #ffcc00;
+  --danger: #ff4d4f;
+  --gray-light: #7a7a8c;
+  --text: #ffffff;
+  --text-muted: #b0b0c3;
+  --border: #1f2a40;
+  --shadow: 0 4px 12px rgba(0,0,0,0.3);
+  --radius: 12px;
+  --font: 'Poppins', 'Rubik', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg-color);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.5;
+  padding-bottom: 80px;
+}
+
+h1, h2, h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 16px 12px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button, select, input, textarea {
+  font-family: inherit;
+  font-size: 14px;
+  border-radius: var(--radius);
+  border: none;
+  padding: 8px 12px;
+}
+
+/* === Nav Bar === */
+.mainNav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: var(--card-bg);
+  display: flex;
+  justify-content: space-around;
+  padding: 6px 0;
+  box-shadow: var(--shadow);
+  border-top: 1px solid var(--border);
+  z-index: 10;
+}
+
+.mainNav a {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mainNav a:hover, .mainNav a.active {
+  color: var(--accent);
+}
+
+/* === Filters & Sort Panel === */
+.filterSortPanel {
+  background: var(--card-bg);
+  padding: 12px;
+  margin: 12px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.filterGroup {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.filterGroup label {
+  background: var(--bg-color);
+  color: var(--text-muted);
+  margin: 4px;
+  padding: 4px 8px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.filterGroup input[type="checkbox"] {
+  display: none;
+}
+
+.filterGroup input[type="checkbox"]:checked + span,
+.filterGroup label:has(input:checked) {
+  background: var(--accent);
+  color: var(--bg-color);
+}
+
+/* === Vehicle Cards === */
+.vehicleList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px;
+}
+
+.vehicleCard {
+  position: relative;
+  width: calc(50% - 12px);
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  overflow: hidden;
+  text-align: left;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease;
+}
+
+.vehicleCard:hover {
+  transform: scale(1.02);
+}
+
+.vehicleThumb {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.vehicleInfo {
+  padding: 8px 10px;
+}
+
+.vehicleInfo h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.vehicleInfo p {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Maintenance & Document Icons */
+.maintIcon, .document-icon {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 18px;
+}
+
+.maintIcon.orange { color: var(--warning); }
+.maintIcon.red { color: var(--danger); }
+
+.document-icon {
+  right: 28px;
+  color: var(--accent);
+}
+
+/* === Vehicle Single Page === */
+.vehicleHeader {
+  padding: 16px;
+  text-align: center;
+}
+
+#vehicleTitle {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.nameplate {
+  margin: 6px auto;
+  padding: 4px 12px;
+  display: inline-block;
+  background: white;
+  color: black;
+  font-weight: bold;
+  border-radius: 4px;
+  letter-spacing: 2px;
+}
+
+.odometerSection {
+  margin: 10px 0;
+}
+
+.odometer {
+  font-family: monospace;
+  background: #111;
+  color: var(--accent);
+  padding: 6px 12px;
+  border-radius: 8px;
+  display: inline-block;
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+
+.odometerEdit {
+  background: transparent;
+  color: var(--accent);
+  margin-left: 12px;
+  border: 1px solid var(--accent);
+}
+
+/* === Tabs === */
+.tabContainer {
+  display: flex;
+  justify-content: center;
+  background: var(--card-bg);
+  margin-top: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tabBtn {
+  flex: 1;
+  text-align: center;
+  padding: 10px 0;
+  font-size: 13px;
+  background: none;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+}
+
+.tabBtn.active {
+  color: var(--accent);
+  border-bottom: 2px solid var(--accent);
+}
+
+/* === Cards Grid === */
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  padding: 16px;
+}
+
+.cardLabel {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.cardValue {
+  font-size: 14px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* === Maintenance Table & Alerts === */
+.maintenanceTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+}
+
+.maintenanceTable th, .maintenanceTable td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  font-size: 13px;
+}
+
+.maintenanceTable tr:nth-child(even) {
+  background: #1b2535;
+}
+
+.alertBox {
+  background: #241b1b;
+  color: var(--warning);
+  padding: 10px;
+  margin: 12px;
+  border-radius: var(--radius);
+}
+
+/* === Popup === */
+.popup {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popupContent {
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: var(--radius);
+  width: 80%;
+  max-width: 300px;
+}
+
+.popupContent input {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+/* === Version Text === */
+.version {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-muted);
+  padding: 10px;
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upcoming Services</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <h2>🔧 Upcoming Services</h2>
+<div class="tableWrapper">
+  <table id="serviceTable">
+    <thead>
+      <tr>
+        <th>Vehicle</th>
+        <th>Current Odo</th>
+        <th>Next Due</th>
+        <th>Remaining</th>
+      </tr>
+    </thead>
+    <tbody id="serviceTableBody"></tbody>
+  </table>
+  <div class="buttonRow">
+  <a href="add-maintenance.html" class="actionBtn">➕ Add Maintenance</a>
+</div>
+</div>
+
+<h2>📄 Expiring Documents</h2>
+<div class="tableWrapper">
+  <table id="documentTable">
+    <thead>
+      <tr>
+        <th>Vehicle</th>
+        <th>Document</th>
+        <th>Expiry Date</th>
+        <th>Days Left</th>
+      </tr>
+    </thead>
+    <tbody id="documentTableBody"></tbody>
+  </table>
+  <div class="buttonRow">
+  <a href="add-document.html" class="actionBtn">➕ Add Document</a>
+</div>
+</div>
+
+
+<nav class="mainNav">
+  <a href="index.html">🏠 Home</a>
+  <a href="service.html">🛠️ Service</a>
+  <a href="report-issue.html">🚗❗ Report</a>
+</nav>
+
+
+  <script src="js/common.js"></script>
+  <script src="js/data-fetch.js"></script>
+  <script src="js/service.js"></script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Maintenance Detail</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="pageHeader">
+    <h1 id="pageTitle">Maintenance Details</h1>
+    <a href="index.html" class="backBtn">← Back</a>
+  </div>
+
+  <div class="summaryBox">
+    <p><strong>Vehicle:</strong> <span id="vehicleName">Loading...</span></p>
+    <p><strong>Odometer:</strong> <span id="odoReading">—</span></p>
+    <p><strong>Date:</strong> <span id="maintDate">—</span></p>
+    <p><strong>Total Cost:</strong> ₹ <span id="totalCost">—</span></p>
+  </div>
+
+  <table class="maintenanceTable">
+    <thead>
+      <tr>
+        <th>Service Item</th>
+        <th>Action</th>
+        <th>Cost</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody id="detailTableBody"></tbody>
+  </table>
+
+<nav class="mainNav">
+  <a href="index.html">🏠 Home</a>
+  <a href="service.html">🛠️ Service</a>
+  <a href="report-issue.html">🚗❗ Report</a>
+</nav>
+
+
+  <script src="js/common.js"></script>
+  <script src="js/data-fetch.js"></script>
+  <script src="js/maintenance-detail.js"></script>
+</body>
+</html>

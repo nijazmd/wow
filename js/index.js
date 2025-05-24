@@ -1,6 +1,12 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const vehicleList = document.getElementById('vehicleList');
-  let allVehicles = await fetchVehicleData();
+const [allVehicles, serviceIntervals, maintenanceData, documents] = await Promise.all([
+  fetchVehicleData(),
+  fetchServiceIntervals(),
+  fetchMaintenanceData(),
+  fetchDocumentsData()
+]);
+
 
 const toggleBtn = document.getElementById('toggleFiltersBtn');
 const filterPanel = document.querySelector('.filterSortPanel');
@@ -132,16 +138,33 @@ toggleBtn.addEventListener('click', () => {
       card.href = `vehicle-single.html?vehicleID=${v.vehicleID}`;
 
       const sortInfo = sortField && v[sortField] ? `<p>${formatLabel(sortField)}: ${v[sortField]}</p>` : '';
+      const maintStatus = getMaintenanceStatus(v, serviceIntervals, maintenanceData);
+      let maintIcon = '';
+      if (maintStatus === 'upcoming') maintIcon = '<span class="maintIcon orange">🛠️</span>';
+      if (maintStatus === 'overdue') maintIcon = '<span class="maintIcon red">🛠️</span>';
 
       card.innerHTML = `
         <img src="images/vehicles/${v.vehicleID}/thumbnail.jpg" alt="${v.vehicleName}" class="vehicleThumb" />
         <div class="vehicleInfo">
+          ${maintIcon}
           <h3>${v.make} ${v.vehicleName}</h3>
           <p>Model Year: ${v.modelYear || '–'}</p>
           <p>Fuel: ${v.fuelType || '–'}</p>
           ${sortInfo}
         </div>
       `;
+
+      const hasOverdueDoc = documents.some(doc => {
+        return doc.vehicleID === v.vehicleID && new Date(doc.expiryDate) < new Date();
+      });
+
+      if (hasOverdueDoc) {
+        const docIcon = document.createElement('span');
+        docIcon.className = 'icon document-icon';
+        docIcon.textContent = '📄';
+        card.appendChild(docIcon);
+      }
+
 
       grid.appendChild(card);
     });
@@ -163,4 +186,37 @@ toggleBtn.addEventListener('click', () => {
       fuelEconomy: 'Fuel Economy'
     }[field] || field;
   }
+  function getMaintenanceStatus(vehicle, intervals, maintenance) {
+  const vehicleID = vehicle.vehicleID;
+  const currentOdo = parseInt(vehicle.CurrentOdometer || '0');
+  const today = new Date();
+
+  const vehicleIntervals = intervals.filter(i => i.vehicleID === vehicleID);
+  const vehicleMaintenance = maintenance.filter(m => m.vehicleID === vehicleID);
+
+  let status = 'normal';
+
+  for (const interval of vehicleIntervals) {
+    const { component, intervalKM, intervalDays } = interval;
+    const records = vehicleMaintenance
+      .filter(m => m.serviceType === component)
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+    const last = records[0];
+
+    if (!last) continue;
+
+    const lastOdo = parseInt(last.odometer || '0');
+    const lastDate = new Date(last.date);
+    const nextOdo = lastOdo + parseInt(intervalKM || '0');
+    const nextDate = new Date(lastDate.getTime() + parseInt(intervalDays || '0') * 86400000);
+
+    const odoDiff = nextOdo - currentOdo;
+    const dateDiff = (nextDate - today) / 86400000;
+
+    if (odoDiff <= 0 || dateDiff <= 0) return 'overdue';
+    if (odoDiff <= 1001 || dateDiff <= 30) status = 'upcoming';
+  }
+
+  return status;
+}
 });

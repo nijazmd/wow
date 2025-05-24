@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report Vehicle Issue</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <h1 class="pageTitle">Report Vehicle Issue</h1>
+  <form id="issueForm" class="formCard">
+    <label>
+      Select Vehicle:
+      <select id="vehicleSelect" required></select>
+    </label>
+
+    <label>
+      Your Name:
+      <input type="text" id="reporterName" required/>
+    </label>
+
+    <label>
+      Date:
+      <input type="date" id="reportDate" required />
+    </label>
+
+    <label>
+      Describe the Issue:
+      <textarea id="issueText" rows="4" required></textarea>
+    </label>
+
+    <button type="submit">Submit Issue</button>
+  </form>
+
+<nav class="mainNav">
+  <a href="index.html">🏠 Home</a>
+  <a href="service.html">🛠️ Service</a>
+  <a href="report-issue.html">🚗❗ Report</a>
+</nav>
+
+
+  <script src="js/common.js"></script>
+  <script src="js/data-fetch.js"></script>
+  <script src="js/report-issue.js"></script>
+</body>
+</html>
