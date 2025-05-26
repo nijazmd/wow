@@ -95,30 +95,61 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Specs
   const specList = document.getElementById('specList');
   const specs = {
-    "Model Year": vehicle.modelYear,
-    "Registration Year": vehicle.registrationYear,
     "Category": vehicle.category,
     "Class": vehicle.class,
-    "Fuel Type": vehicle.fuelType,
-    "Drivetrain": vehicle.drivetrain,
-    "Gearbox": vehicle.gearbox,
-    "Colors": vehicle.colors,
-    "RC Owner": vehicle.rcOwner,
     "Owners": vehicle.owners,
+    "RC Owner": vehicle.rcOwner,
+    "Fuel Type": vehicle.fuelType,
+    "Turbo": vehicle.turbo,
     "Displacement": vehicle.displacement,
+    "Cylinders": vehicle.cylinders,
     "Power": vehicle.power,
     "Torque": vehicle.torque,
+    "Gearbox": vehicle.gearbox,
+    "Drivetrain": vehicle.drivetrain,
     "Fuel Economy": vehicle.fuelEconomy,
-    "Seating Capacity": vehicle.seatingCapacity,
     "Boot Space": vehicle.bootSpace,
-    "Turbo": vehicle.turbo,
-    "Cylinders": vehicle.cylinders
+    "Colors": vehicle.colors,
+    "Seating Capacity": vehicle.seatingCapacity,
+    "Registration Year": vehicle.registrationYear,
+    "Model Year": vehicle.modelYear
   };
+    
   for (const [label, value] of Object.entries(specs)) {
-    const li = document.createElement('li');
-    li.innerHTML = `<span class="cardLabel">${label}</span><span class="cardValue">${value || '—'}</span>`;
-    specList.appendChild(li);
+  // Skip specific fields for Motorcycles
+  if (
+    vehicle.category === "Motorcycle" &&
+    (label === "Drivetrain" || label === "Boot Space" || label === "Turbo")
+  ) {
+    continue;
   }
+
+  let displayValue = value || '—';
+
+  // Append unit for Displacement
+  if (label === "Displacement" && value) {
+    displayValue += " cc";
+  }
+
+  // Append unit for Torque
+  if (label === "Torque" && value) {
+    displayValue += " Nm";
+  }
+
+  // Combine Number of Gears with Gearbox
+  if (label === "Gearbox") {
+    const gears = vehicle.numberOfGears;
+    if (gears) {
+      displayValue = `${gears} speed ${value}`;
+    }
+  }
+
+  const li = document.createElement('li');
+  li.innerHTML = `<span class="cardLabel">${label}</span><span class="cardValue">${displayValue}</span>`;
+  specList.appendChild(li);
+}
+
+
 
   // Maintenance
   const vehicleMaint = maintenance.filter(m => m.vehicleID === vehicleID);

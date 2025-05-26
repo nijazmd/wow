@@ -158,12 +158,18 @@ function populateCheckboxGroup(containerId, options, name) {
       if (maintStatus === 'overdue') maintIcon = '<span class="maintIcon red">🛠️</span>';
 
       card.innerHTML = `
-        <img src="images/vehicles/${v.vehicleID}/thumbnail.jpg" alt="${v.vehicleName}" class="vehicleThumb" />
+        <img src="images/vehicles/${v.vehicleID}/1.jpg" alt="${v.vehicleName}" class="vehicleThumb" />
         <div class="vehicleInfo">
           ${maintIcon}
           <h3>${v.make} ${v.vehicleName}</h3>
-          <p>Model Year: ${v.modelYear || '–'}</p>
-          <p>Fuel: ${v.fuelType || '–'}</p>
+          <div class="splitTwo">
+          <div>⛽ ${v.fuelType || '–'}</div>
+          <div>🧱 ${v.displacement ? v.displacement + ' cc' : '–'}</div>
+          <div>⚡ ${v.power || '–'}</div>
+          <div>🔩 ${v.torque ? v.torque + ' Nm' : '–'}</div>
+          </div>
+          ${sortInfo}
+
           ${sortInfo}
         </div>
       `;
