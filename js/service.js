@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     mainRow.classList.add(statusClass);
     mainRow.innerHTML = `
       <td>${vehicleName}</td>
-      <td>${currentOdo} km</td>
+      <td>${currentOdo}</td>
       <td>${earliest.dueDate.toLocaleDateString()}<br>${earliest.dueKM} km</td>
       <td>${earliest.remainingDays} days / ${earliest.remainingKM} km</td>
     `;

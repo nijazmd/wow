@@ -20,15 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     row.className = 'serviceItemRow';
     row.innerHTML = `
       <label>Service Item:
-        <select class="serviceType" required>
-          <option value="">-- Select --</option>
-          <option value="Engine Oil">Engine Oil</option>
-          <option value="Brake Pads">Brake Pads</option>
-          <option value="Coolant">Coolant</option>
-          <option value="Battery">Battery</option>
-          <option value="Tyres">Tyres</option>
-          <option value="AC Service">AC Service</option>
-        </select>
+        <input list="serviceSuggestions" class="serviceType" required />
       </label>
       <label>Action:
         <select class="action" required>
@@ -47,12 +39,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     `;
     serviceItemsContainer.appendChild(row);
   }
+  
 
   addServiceItemBtn.addEventListener('click', addServiceItemRow);
   addServiceItemRow(); // initial row
 
   formMaintenance.addEventListener('submit', async (e) => {
     e.preventDefault();
+    const labour = document.getElementById('labourCharges').value || "";
 
     const vehicleID = vehicleSelect.value;
     const date = document.getElementById('maintDate').value;
@@ -76,6 +70,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       params.append('action', action);
       params.append('cost', cost);
       params.append('notes', notes);
+      params.append('labourCharges', labour);
 
       try {
         await fetch(WEB_APP_URL, {
@@ -99,4 +94,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     serviceItemsContainer.innerHTML = '';
     addServiceItemRow(); // add a fresh row
   });
+  document.getElementById('maintDate').valueAsDate = new Date();
+
 });

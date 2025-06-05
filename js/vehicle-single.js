@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   const li = document.createElement('li');
-  li.innerHTML = `<span class="cardLabel">${label}</span><span class="cardValue">${displayValue}</span>`;
+  li.innerHTML = `<div class="cardLabel">${label}</div><div class="cardValue">${displayValue}</div>`;
   specList.appendChild(li);
 }
 
@@ -201,10 +201,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${component}</td>
-        <td>${lastDate}</td>
-        <td>${lastOdo}</td>
-        <td>${dueDate}</td>
-        <td>${dueKM}</td>
+        <td>${lastDate} <br> ${lastOdo}</td>
+        <td>${dueDate}<br>${dueKM}</td>
       `;
       tableBody.appendChild(tr);
     });
@@ -233,7 +231,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     reports.sort((a, b) => new Date(b.date) - new Date(a.date));
     reports.forEach(r => {
       const li = document.createElement('li');
-      li.innerHTML = `<strong>${r.date}</strong> ${r.reporter ? `by ${r.reporter}` : ''}<br>${r.issue}`;
+      li.innerHTML = `<div class="issueLabel">on ${r.date} ${r.reporter ? `by ${r.reporter}` : ''}</div>${r.issue}`;
       issueList.appendChild(li);
     });
   }
@@ -276,12 +274,26 @@ document.addEventListener('DOMContentLoaded', async () => {
       const remainingDays = Math.ceil((expiry - today) / 86400000);
       const li = document.createElement('li');
       li.innerHTML = `
-        <span class="cardLabel">${doc.documentType}</span>
-        <span class="cardValue">
-          Expiry: ${doc.expiryDate} (${remainingDays} days)<br>
-          ${doc.fileLink ? `<a href="${doc.fileLink}" target="_blank">View</a><br>` : ''}
-          ${doc.notes ? `<small>${doc.notes}</small>` : ''}
-        </span>`;
+        <div class="docLabel">${doc.documentType}</div>
+        <div class="docExpiry">
+          <div class="docInfo">
+            <div class="row">
+              <span class="issueLabel">Expiry: &nbsp;</span> 
+              <span class="docDate">${doc.expiryDate}</span> 
+            </div>
+            <div class="row">
+              <span class="issueLabel">Remaining: &nbsp;</span> 
+              <span class="remaining">(${remainingDays} days)</span>
+            </div>
+            <div class="row">
+              <span class="issueLabel">File: </span> 
+              <span> ${doc.fileLink ? `<a href="${doc.fileLink}" target="_blank">View</a><br>` : ''}</span>
+            </div>
+            <div class="row">
+              <span class="issueLabel">Notes: &nbsp;</span> 
+              <span>${doc.notes ? `${doc.notes}` : ''}</span>
+            </div>
+        </div>`;
       documentList.appendChild(li);
     });
   }

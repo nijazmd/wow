@@ -1,22 +1,29 @@
 document.addEventListener('DOMContentLoaded', async () => {
+  const urlUser = getQueryParam('user');
+  if (urlUser) {
+    sessionStorage.setItem('currentUser', urlUser);
+  }
+
   const vehicleList = document.getElementById('vehicleList');
-const [allVehicles, serviceIntervals, maintenanceData, documents] = await Promise.all([
-  fetchVehicleData(),
-  fetchServiceIntervals(),
-  fetchMaintenanceData(),
-  fetchDocumentsData()
-]);
+  const [allVehicles, serviceIntervals, maintenanceData, documents] = await Promise.all([
+    fetchVehicleData(),
+    fetchServiceIntervals(),
+    fetchMaintenanceData(),
+    fetchDocumentsData()
+  ]);
 
 
 const toggleBtn = document.getElementById('toggleFiltersBtn');
+const groupBySelect = document.getElementById('groupByOption');
 const filterPanel = document.querySelector('.filterSortPanel');
 
 toggleBtn.addEventListener('click', () => {
   const isVisible = !filterPanel.classList.contains('hidden');
   filterPanel.classList.toggle('hidden');
-  toggleBtn.textContent = isVisible ? 'Show Filters & Sort' : 'Hide Filters & Sort';
-});
 
+  // Remove text toggle, add class toggle instead
+  toggleBtn.classList.toggle('active', !isVisible);
+});
 
 
   // Filter checkbox groups
@@ -30,14 +37,50 @@ toggleBtn.addEventListener('click', () => {
   populateCheckboxGroup('filterOwnerGroup', getUniqueNamesFromField(allVehicles, 'owners'), 'filterOwner');
   populateCheckboxGroup('filterRcOwnerGroup', getUniqueValues(allVehicles, 'rcOwner'), 'filterRcOwner');
 
-  renderVehicles(allVehicles);
+  const currentUser = sessionStorage.getItem('currentUser');
+
+if (currentUser) {
+  const greetingContainer = document.getElementById('userGreetingArea');
+  if (greetingContainer) {
+    const imgPath = `images/users/${currentUser}.jpg`;
+    const fallbackImg = `images/users/user.jpg`;
+
+    greetingContainer.innerHTML = `
+      <div class="userContainer">
+        <div class="profilePic">
+          <img src="${imgPath}" alt="${currentUser}" onerror="this.onerror=null;this.src='${fallbackImg}';" />
+        </div>
+        <div class="userGreeting">Hello <span>${currentUser}</span></div>
+      </div>
+    `;
+  }
+}
+
+let defaultGroup = 'class';
+
+
+if (currentUser) {
+  const ownsVehicles = allVehicles.some(v =>
+    v.owners?.split(',').map(o => o.trim().toLowerCase()).includes(currentUser.toLowerCase())
+  );
+  if (ownsVehicles) {
+    defaultGroup = 'owners';
+  }
+}
+  
+  
+  const filtered = applyFilters(allVehicles);
+  groupBySelect.value = defaultGroup;
+  renderVehiclesGrouped(filtered, defaultGroup);
+  
+  
 
   // Trigger update on any filter/sort change
   document.querySelectorAll('input[type="checkbox"], #sortOption').forEach(el => {
     el.addEventListener('change', () => {
       const filtered = applyFilters(allVehicles);
       const sorted = applySort(filtered);
-      renderVehicles(sorted);
+      renderVehiclesGrouped(filtered, groupBySelect.value);
     });
   });
 
@@ -77,35 +120,55 @@ function populateCheckboxGroup(containerId, options, name) {
 }
 
 
-  function getCheckedValues(name) {
-    return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(cb => cb.value);
-  }
+function getCheckedValues(name) {
+  return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(cb => cb.value);
+}
+document.getElementById('vehicleSearch').addEventListener('input', () => {
+  const filtered = applyFilters(allVehicles);
+  const sorted = applySort(filtered);
+  renderVehiclesGrouped(filtered, groupBySelect.value);
+});
 
-  function applyFilters(data) {
-    const filters = {
-      make: getCheckedValues('filterMake'),
-      category: getCheckedValues('filterCategory'),
-      class: getCheckedValues('filterClass'),
-      fuelType: getCheckedValues('filterFuelType'),
-      drivetrain: getCheckedValues('filterDrivetrain'),
-      gearbox: getCheckedValues('filterGearbox'),
-      colors: getCheckedValues('filterColor'),
-      owner: getCheckedValues('filterOwner'),
-      rcOwner: getCheckedValues('filterRcOwner')
-    };
+function applyFilters(data) {
+  const filters = {
+    make: getCheckedValues('filterMake'),
+    category: getCheckedValues('filterCategory'),
+    class: getCheckedValues('filterClass'),
+    fuelType: getCheckedValues('filterFuelType'),
+    drivetrain: getCheckedValues('filterDrivetrain'),
+    gearbox: getCheckedValues('filterGearbox'),
+    colors: getCheckedValues('filterColor'),
+    owner: getCheckedValues('filterOwner'),
+    rcOwner: getCheckedValues('filterRcOwner')
+  };
 
-    return data.filter(v =>
-      (!filters.make.length || filters.make.includes(v.make)) &&
-      (!filters.category.length || filters.category.includes(v.category)) &&
-      (!filters.class.length || filters.class.includes(v.class)) &&
-      (!filters.fuelType.length || filters.fuelType.includes(v.fuelType)) &&
-      (!filters.drivetrain.length || filters.drivetrain.includes(v.drivetrain)) &&
-      (!filters.gearbox.length || filters.gearbox.includes(v.gearbox)) &&
-      (!filters.colors.length || filters.colors.some(c => v.colors?.includes(c))) &&
-      (!filters.owner.length || filters.owner.some(o => v.owners?.split(',').map(n => n.trim()).includes(o))) &&
-      (!filters.rcOwner.length || filters.rcOwner.includes(v.rcOwner))
+  let result = data.filter(v =>
+    (!filters.make.length || filters.make.includes(v.make)) &&
+    (!filters.category.length || filters.category.includes(v.category)) &&
+    (!filters.class.length || filters.class.includes(v.class)) &&
+    (!filters.fuelType.length || filters.fuelType.includes(v.fuelType)) &&
+    (!filters.drivetrain.length || filters.drivetrain.includes(v.drivetrain)) &&
+    (!filters.gearbox.length || filters.gearbox.includes(v.gearbox)) &&
+    (!filters.colors.length || filters.colors.some(c => v.colors?.includes(c))) &&
+    (!filters.owner.length || filters.owner.some(o => v.owners?.split(',').map(n => n.trim()).includes(o))) &&
+    (!filters.rcOwner.length || filters.rcOwner.includes(v.rcOwner))
+  );
+
+  // Apply search filter
+  const searchTerm = document.getElementById('vehicleSearch').value.trim().toLowerCase();
+  if (searchTerm) {
+    result = result.filter(v =>
+      `${v.make} ${v.vehicleName}`.toLowerCase().includes(searchTerm) ||
+      (v.owners || '').toLowerCase().includes(searchTerm) ||
+      (v.rcOwner || '').toLowerCase().includes(searchTerm) ||
+      (v.category || '').toLowerCase().includes(searchTerm) ||
+      (v.class || '').toLowerCase().includes(searchTerm)
     );
   }
+
+  return result;
+}
+
 
   function applySort(data) {
     const sortField = document.getElementById('sortOption').value;
@@ -118,7 +181,17 @@ function populateCheckboxGroup(containerId, options, name) {
     });
   }
 
-  function renderVehicles(vehicles) {
+  document.getElementById('groupByOption').addEventListener('change', () => {
+    const filtered = applyFilters(allVehicles);
+    const sorted = applySort(filtered);
+    renderVehiclesGrouped(filtered, groupBySelect.value);
+  });
+
+  
+  
+
+  function renderVehiclesGrouped(vehicles, groupBy) {
+
   vehicleList.innerHTML = '';
   const sortField = document.getElementById('sortOption').value;
 
@@ -129,13 +202,32 @@ function populateCheckboxGroup(containerId, options, name) {
 
   // Group by class
   const grouped = {};
-  vehicles.forEach(v => {
-    const group = v.class || 'Other';
-    if (!grouped[group]) grouped[group] = [];
-    grouped[group].push(v);
-  });
 
-  for (const groupName in grouped) {
+  if (groupBy === 'owners') {
+    const user = sessionStorage.getItem('currentUser');
+    vehicles.forEach(v => {
+      const ownerList = v.owners?.split(',').map(o => o.trim()) || [];
+      const isMine = user && ownerList.some(o => o.trim().toLowerCase() === user.toLowerCase());
+
+      const key = isMine ? 'My Wheels' : 'Shared Wheels';
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(v);
+    });
+  } else {
+    vehicles.forEach(v => {
+      let key = groupBy === 'none' ? 'All Vehicles' : (v[groupBy] || 'Unknown');
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(v);
+    });
+  }
+  
+
+  const groupOrder = ['My Wheels', 'Shared Wheels'];
+const orderedKeys = groupOrder.filter(g => grouped[g]).concat(
+  Object.keys(grouped).filter(k => !groupOrder.includes(k))
+);
+
+for (const groupName of orderedKeys) {
     const groupSection = document.createElement('div');
     groupSection.className = 'vehicleGroup';
 
@@ -154,19 +246,18 @@ function populateCheckboxGroup(containerId, options, name) {
       const sortInfo = sortField && v[sortField] ? `<p>${formatLabel(sortField)}: ${v[sortField]}</p>` : '';
       const maintStatus = getMaintenanceStatus(v, serviceIntervals, maintenanceData);
       let maintIcon = '';
-      if (maintStatus === 'upcoming') maintIcon = '<span class="maintIcon orange">🛠️</span>';
-      if (maintStatus === 'overdue') maintIcon = '<span class="maintIcon red">🛠️</span>';
-
+      if (maintStatus === 'upcoming') maintIcon = '<span class="alertIcon maintIcon warning"><img src="images/icons/maintenance.svg" alt="Service Due"></span>';
+      if (maintStatus === 'overdue') maintIcon = '<span class="alertIcon maintIcon danger"><img src="images/icons/maintenance.svg" alt="Document Due"></img></span>';
       card.innerHTML = `
         <img src="images/vehicles/${v.vehicleID}/1.jpg" alt="${v.vehicleName}" class="vehicleThumb" />
         <div class="vehicleInfo">
           ${maintIcon}
-          <h3>${v.make} ${v.vehicleName}</h3>
-          <div class="splitTwo">
-          <div>⛽ ${v.fuelType || '–'}</div>
-          <div>🧱 ${v.displacement ? v.displacement + ' cc' : '–'}</div>
-          <div>⚡ ${v.power || '–'}</div>
-          <div>🔩 ${v.torque ? v.torque + ' Nm' : '–'}</div>
+          <h3>${v.make} <span>${v.vehicleName}</span></h3>
+          <div class="infoDetails">
+          <div class="infoItem colTwo"><img src="images/icons/fuel.svg" alt="Fuel:">${v.fuelType || '–'}</div>
+          <div class="infoItem colTwo"><img src="images/icons/engine.svg" alt="">${v.displacement ? v.displacement + ' cc' : '–'}</div>
+          <div class="infoItem colTwo"><img src="images/icons/power.svg" alt="">${v.power || '–'}</div>
+          <div class="infoItem colTwo"><img src="images/icons/torque.svg" alt="">${v.torque ? v.torque + ' Nm' : '–'}</div>
           </div>
           ${sortInfo}
 
@@ -180,8 +271,8 @@ function populateCheckboxGroup(containerId, options, name) {
 
       if (hasOverdueDoc) {
         const docIcon = document.createElement('span');
-        docIcon.className = 'icon document-icon';
-        docIcon.textContent = '📄';
+        docIcon.className = 'alertIcon docIcon';
+        docIcon.innerHTML = '<img src="images/icons/doc.svg" alt="Document Due"></img>';
         card.appendChild(docIcon);
       }
 
