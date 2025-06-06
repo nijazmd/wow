@@ -6,7 +6,13 @@
   <title>Add Maintenance</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body>
+<body class="hasTitlebar">
+
+  <div class="pageHead" id="maintTab">
+    <div class="titleBar">
+      <div class="titleBtn"><a href="service.html"><img src="images/icons/back.svg" alt="">&nbsp; Back</a></div>
+    </div>
+  </div>
 
   <h1>Add Maintenance</h1>
 
@@ -26,7 +32,9 @@
       <input type="number" id="maintOdometer" required />
     </label>
 
-    
+    <label for="workshopName">Workshop:
+      <input type="text" id="workshopName" />
+    </label>
 
     <div id="serviceItemsContainer"></div>
 
@@ -57,7 +65,11 @@
     <li><a href="report-issue.html"><div><img src="images/icons/report.svg" alt=""></div> <div>Report</div></a></li>
   </ul>
 
-
+  <div id="loaderOverlay" class="loader hidden">
+    <div class="spinner"></div>
+    <div class="loaderText">Submitting...</div>
+  </div>
+  
   <script src="js/common.js"></script>
   <script src="js/data-fetch.js"></script>
   <script src="js/add.js"></script>

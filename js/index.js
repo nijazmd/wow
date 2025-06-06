@@ -271,11 +271,10 @@ for (const groupName of orderedKeys) {
 
       if (hasOverdueDoc) {
         const docIcon = document.createElement('span');
-        docIcon.className = 'alertIcon docIcon';
-        docIcon.innerHTML = '<img src="images/icons/doc.svg" alt="Document Due"></img>';
+        docIcon.className = 'alertIcon docIcon danger';
+        docIcon.innerHTML = '<img src="images/icons/doc.svg" alt="Document Due">';
         card.appendChild(docIcon);
-      }
-
+      }      
 
       grid.appendChild(card);
     });

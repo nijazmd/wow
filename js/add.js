@@ -46,32 +46,41 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   formMaintenance.addEventListener('submit', async (e) => {
     e.preventDefault();
+  
+    const loader = document.getElementById('loaderOverlay');
+    loader.classList.remove('hidden');
+  
+    const submitBtn = formMaintenance.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+  
     const labour = document.getElementById('labourCharges').value || "";
-
+  
     const vehicleID = vehicleSelect.value;
     const date = document.getElementById('maintDate').value;
     const odometer = document.getElementById('maintOdometer').value;
     const rows = serviceItemsContainer.querySelectorAll('.serviceItemRow');
-
+    const workshop = document.getElementById('workshopName').value || "";
+  
     let allSuccess = true;
-
+  
     for (const row of rows) {
       const serviceType = row.querySelector('.serviceType')?.value || "";
       const action = row.querySelector('.action')?.value || "";
       const cost = row.querySelector('.cost')?.value || "";
       const notes = row.querySelector('.notes')?.value || "";
-
+  
       const params = new URLSearchParams();
       params.append('type', 'maintenance');
       params.append('vehicleID', vehicleID);
       params.append('date', date);
       params.append('odometer', odometer);
+      params.append('workshop', workshop);
       params.append('serviceType', serviceType);
       params.append('action', action);
       params.append('cost', cost);
       params.append('notes', notes);
       params.append('labourCharges', labour);
-
+  
       try {
         await fetch(WEB_APP_URL, {
           method: 'POST',
@@ -84,16 +93,44 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }
 
+    if (labour) {
+      const params = new URLSearchParams();
+      params.append('type', 'maintenance');
+      params.append('vehicleID', vehicleID);
+      params.append('date', date);
+      params.append('odometer', odometer);
+      params.append('serviceType', 'Labour Charges');
+      params.append('action', '');
+      params.append('cost', labour);
+      params.append('notes', '');
+      params.append('workshop', document.getElementById('workshopName').value || '');
+    
+      try {
+        await fetch(WEB_APP_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          body: params
+        });
+      } catch (err) {
+        console.error('Labour entry failed:', err);
+        allSuccess = false;
+      }
+    }
+    
+  
+    loader.classList.add('hidden');
+    submitBtn.disabled = false;
+  
     if (allSuccess) {
       alert('Maintenance entries submitted successfully.');
     } else {
       alert('Some entries may have failed to submit.');
     }
-
+  
     formMaintenance.reset();
     serviceItemsContainer.innerHTML = '';
     addServiceItemRow(); // add a fresh row
   });
-  document.getElementById('maintDate').valueAsDate = new Date();
+  
 
 });

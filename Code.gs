@@ -20,7 +20,10 @@ function doPost(e) {
 
 // ✅ Submit maintenance entry
 function handleMaintenanceSubmission(entry) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_MAINTENANCE);
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  // 1. Append to Maintenance sheet
+  const sheet = ss.getSheetByName(SHEET_MAINTENANCE);
   sheet.appendRow([
     entry.vehicleID,
     entry.date,
@@ -28,10 +31,38 @@ function handleMaintenanceSubmission(entry) {
     entry.serviceType,
     entry.action,
     entry.cost,
-    entry.notes
+    entry.notes,
+    entry.workshop || ""
   ]);
-  return ContentService.createTextOutput('Maintenance entry added');
+
+  // 2. Compare with current odometer and update if needed
+  const vehicleSheet = ss.getSheetByName('Vehicles');
+  const vehicleData = vehicleSheet.getDataRange().getValues();
+  const headers = vehicleData[0];
+  const idCol = headers.indexOf('vehicleID');
+  const odoCol = headers.indexOf('CurrentOdometer');
+  const dateCol = headers.indexOf('OdometerUpdatedDate'); // Ensure this column exists
+
+  if (idCol === -1 || odoCol === -1 || dateCol === -1) {
+    return ContentService.createTextOutput("Column not found").setMimeType(ContentService.MimeType.TEXT);
+  }
+
+  for (let i = 1; i < vehicleData.length; i++) {
+    if (String(vehicleData[i][idCol]) === String(entry.vehicleID)) {
+      const currentOdo = parseInt(vehicleData[i][odoCol]) || 0;
+      const newOdo = parseInt(entry.odometer) || 0;
+
+      if (newOdo > currentOdo) {
+        vehicleSheet.getRange(i + 1, odoCol + 1).setValue(newOdo);
+        vehicleSheet.getRange(i + 1, dateCol + 1).setValue(new Date());
+      }
+      break;
+    }
+  }
+
+  return ContentService.createTextOutput('Maintenance entry added').setMimeType(ContentService.MimeType.TEXT);
 }
+
 
 // ✅ Submit document entry
 function handleDocumentSubmission(entry) {
@@ -66,7 +97,7 @@ function updateCurrentOdometer(vehicleID, odometer) {
   const headers = data[0];
   const idCol = headers.indexOf('vehicleID');
   const odoCol = headers.indexOf('CurrentOdometer');
-  const dateCol = headers.indexOf('OdometerDate'); // ✅ Add this column in your sheet
+  const dateCol = headers.indexOf('OdometerUpdatedDate'); // ✅ Add this column in your sheet
 
   if (idCol === -1 || odoCol === -1 || dateCol === -1) {
     return ContentService.createTextOutput("Column not found").setMimeType(ContentService.MimeType.TEXT);

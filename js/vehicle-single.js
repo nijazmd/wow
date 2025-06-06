@@ -267,16 +267,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     reports.sort((a, b) => new Date(b.date) - new Date(a.date));
     reports.forEach(r => {
       const li = document.createElement('li');
-
-      if (remainingDays <= 0) {
-        li.classList.add('danger');
-      } else if (remainingDays <= 30) {
-        li.classList.add('warning');
-      }
-
+    
       li.innerHTML = `<div class="issueLabel">on ${r.date} ${r.reporter ? `by ${r.reporter}` : ''}</div>${r.issue}`;
       issueList.appendChild(li);
-    });
+    });    
   }
 
   renderMaintenanceCards();
