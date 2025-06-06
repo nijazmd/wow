@@ -27,6 +27,7 @@
 
 html {
   font-size: 10px;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -41,7 +42,7 @@ body {
 div, nav {
   display: flex;
 }
-input, select {
+input, select, textarea {
   border: none;
   outline: none;
   box-shadow: none;
@@ -91,7 +92,11 @@ button {
 }
 .titleBtn a {
   display: flex;
+  padding: var(--small) 0;
 }
+/* body.withTitleBar {
+  padding-top: 80px;
+} */
 
 h1 {
   font-size: 2rem;
@@ -137,6 +142,12 @@ td {
 tbody {
   color: var(--white);
   background: var(--dark-gray);
+}
+tr.danger {
+  background-color: var(--danger);
+}
+tr.warning {
+  background-color: var(--warning);
 }
 
 .popup.hidden {
@@ -284,7 +295,7 @@ tbody {
   width: 100%;
   margin-left: var(--small);
 }
-input {
+input, select, textarea {
   width: 100%;
   height: 40px;
   padding: 0 15px;
@@ -295,10 +306,13 @@ input {
   font-size: 1.4rem;
   color: white;
 }
+textarea {
+  min-height: 60px;
+}
 .sortNgroup {
   margin: var(--small) 0;
 }
-.sortNgroup label {
+.sortNgroup label, .label {
   font-size: 1.2rem;
   color: var(--light-gray); 
   margin-bottom: var(--xsmall);
@@ -380,14 +394,29 @@ input {
 }
 
 /* VEHICLE SINGLE PAGE */
+.pageHead {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: var(--small) var(--large);
+  flex-direction: column;
+  background-color: var(--dark-blue);
+  box-shadow: 2px 0px rgba(0, 0, 0, 0.3);
+  z-index: 900;
+}
 .tabPanel {
   flex-direction: column;
   margin-bottom: var(--large);
 }
+
+#vehicleTitle {
+  margin-top: 40px;
+}
 .vehicleHeader {
   width: 100%;
   justify-content: space-between;
-  margin-bottom: var(--large);
+  margin: var(--large) auto;
 }
 .imageGallery {
   width: 100%;
@@ -399,16 +428,19 @@ input {
 }
 .tabContainer {
   width: 100%;
+  position: sticky;
+  top: 0;
+  background: var(--dark-blue);
   justify-content: center;
 }
 .tabBtn {
-  padding: var(--small) var(--medium);
+  padding: var(--xsmall) var(--medium);
   font-size: 1.4rem;
   color: var(--white);
   text-align: center;
   background-color: var(--dark-gray);
   border-radius: var(--radius);
-  margin: var(--large) var(--xsmall);
+  margin: var(--medium) var(--xsmall);
 }
 .tabBtn.active {
   background-color: var(--proto-main);
@@ -466,12 +498,11 @@ input {
   font-size: 1.4rem;
   color: var(--white);
 }
+.issueList li.danger {border-color: var(--danger);}
+.issueList li.warning {border-color: var(--warning);}
 .issueLabel {
   margin-bottom: var(--xsmall);
   color: var(--light-gray);
-}
-.maintenanceTable {
-  margin-bottom: var(--large);
 }
 .docLabel {
   font-weight: 600;
@@ -495,6 +526,7 @@ input {
 .odoContainer {
   position: relative;
   flex-direction: column;
+  height: 48px;
 }
 .odoBG {
   position: absolute;
@@ -519,8 +551,62 @@ input {
   text-align: right;
   color: var(--proto-sub);
 }
+#odoInput {
+  letter-spacing: var(--xsmall);
+}
 
 .divGroup {
   flex-direction: column;
   margin-bottom: var(--large);
+}
+
+.alertBox {
+  width: 100%;
+  flex-direction: column;
+  margin-top: var(--large);
+}
+.alertItem {
+  width: 100%;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--white);
+  background-color: var(--warning);
+  padding: var(--small);
+  margin-bottom: var(--small);
+  border-radius: var(--radius);
+}
+.alertItem.danger {
+  background-color: var(--danger);
+}
+
+/* MAINTENANCE DETAIL PAGE */
+.summaryBox {
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: var(--large);
+}
+.summaryBox .summaryItem {
+  width: 48%;
+  margin-bottom: var(--small);
+  flex-direction: column;
+}
+#pageTitle {
+  margin-top: 50px;
+}
+
+/* ADD SERVICE */
+.formGroup, #serviceItemsContainer, .serviceItemRow {
+  flex-direction: column;
+}
+.serviceItemRow {
+  width: 100%;
+  margin: var(--large) auto;
+}
+#maintenanceForm {
+  margin-bottom: var(--large);
+}
+
+.formBtns button {
+  margin: var(--large) var(--small) var(--large) 0;
+  color: var(--white);
 }

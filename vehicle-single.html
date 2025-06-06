@@ -6,14 +6,17 @@
   <title>Vehicle Details</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body>
+<body class="withTitleBar">
 
   <div class="bg"></div>
 
+<div class="pageHead" id="maintTab">
   <div class="titleBar">
     <div class="titleBtn"><a href="index.html"><img src="images/icons/back.svg" alt="">&nbsp; Back</a></div>
-    <div id="odoUpdateBtn" class="titleBtn odometerEdit">Update Odo</div>
+    <div id="odoUpdateBtn" class="titleBtn odometerEdit"><a href="#">Update Odo</a></div>
   </div>
+</div>
+    
   <!-- 🔷 VEHICLE HEADER INFO -->
   <h1 id="vehicleTitle">Vehicle Name</h1>
   <div class="vehicleHeader">
@@ -23,7 +26,7 @@
     <!-- 🧭 Current Odometer -->
     <div class="odoContainer">
       <div class="odoBG"></div>
-      <div class="odoDate">Odo on 22/05/25</div>
+      <div id="odoDate" class="odoDate"></div>
       <div id="odometerValue" class="odometer">—</div>
 
     </div>
@@ -31,22 +34,17 @@
   <!-- 🖼️ Image Gallery -->
   <div id="imageGallery" class="imageGallery"></div>
 
-  <!-- 🔘 TAB BUTTONS -->
-  <div class="tabContainer">
-    <button class="tabBtn active" data-tab="infoTab">Info</button>
-    <button class="tabBtn" data-tab="maintTab">Maintenance</button>
-    <button class="tabBtn" data-tab="docsTab">Documents</button>
-  </div>
+
+  <h2 class="sectionHeading">Reported Issues</h2>
+  <ul id="issueList" class="issueList"></ul>
 
   <!-- 📂 TAB PANELS -->
-  <div id="infoTab" class="tabPanel active">
+  <div class="tabPanel active">
     <h2>Info</h2>
     <ul id="specList" class="cardGrid"></ul>
   </div>
   
   <div id="maintTab" class="tabPanel">
-    <h2 class="sectionHeading">Reported Issues</h2>
-    <ul id="issueList" class="issueList"></ul>
 
     <h2>Maintenance by Parts</h2>
     <table id="maintenanceTable" class="maintenanceTable">

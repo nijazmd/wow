@@ -35,7 +35,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const latest = vehicleMaint.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
     odometerValue = latest?.odometer || '—';
   }
-  document.getElementById('odometerValue').textContent = odometerValue;
+  const paddedOdo = odometerValue.toString().padStart(6, '0');
+  document.getElementById('odometerValue').textContent = paddedOdo;
+
+  if (vehicle.OdometerUpdatedDate) {
+    document.getElementById('odoDate').textContent = `Odo as on ${vehicle.OdometerUpdatedDate}`;
+  }
+  
 
   // Odometer popup
   const odoPopup = document.getElementById('odoPopup');
@@ -59,6 +65,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     params.append('type', 'updateOdometer');
     params.append('vehicleID', vehicleID);
     params.append('odometer', newOdo);
+    const todayStr = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+    params.append('date', todayStr);
 
     try {
       const response = await fetch('https://script.google.com/macros/s/AKfycbyD89HHxv2EIytHw-SkCnSYCK3w07HLQ24anzoUXiJnFE-l5Z05urBByqxV7fL22II5Rg/exec', {
@@ -68,7 +76,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const text = await response.text();
       if (text.includes("updated")) {
-        document.getElementById('odometerValue').textContent = newOdo;
+        document.getElementById('odometerValue').textContent = newOdo.toString().padStart(6, '0');
+        document.getElementById('odoDate').textContent = todayStr; // 👈 add this
         odoPopup.classList.add('hidden');
         odometerValue = newOdo; // update local variable
         renderMaintenanceCards();
@@ -81,17 +90,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       alert('Failed to update odometer.');
     }
   });
-
-  // Tabs logic
-  document.querySelectorAll('.tabBtn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.tabBtn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tabPanel').forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById(btn.dataset.tab).classList.add('active');
-    });
-  });
-
+  
   // Specs
   const specList = document.getElementById('specList');
   const specs = {
@@ -192,13 +191,21 @@ document.addEventListener('DOMContentLoaded', async () => {
       const dateDiff = dueDateObj ? Math.ceil((new Date(dueDateObj.getTime() + intervalDays * 86400000) - today) / 86400000) : null;
 
       if ((odoDiff !== null && odoDiff <= 0) || (dateDiff !== null && dateDiff <= 0)) {
-        alerts.push(`❗ ${component} due`);
+        alerts.push({ text: `${component} Due`, type: 'maintenance', danger: true });
       } else if ((odoDiff !== null && odoDiff <= 1000) || (dateDiff !== null && dateDiff <= 30)) {
-        alerts.push(`⚠️ ${component} due soon`);
+        alerts.push({ text: `${component} Due soon`, type: 'maintenance' });
       }
+      
 
 
       const tr = document.createElement('tr');
+
+      if ((odoDiff !== null && odoDiff <= 0) || (dateDiff !== null && dateDiff <= 0)) {
+        tr.classList.add('danger');
+      } else if ((odoDiff !== null && odoDiff <= 1000) || (dateDiff !== null && dateDiff <= 30)) {
+        tr.classList.add('warning');
+      }
+
       tr.innerHTML = `
         <td>${component}</td>
         <td>${lastDate} <br> ${lastOdo}</td>
@@ -207,15 +214,44 @@ document.addEventListener('DOMContentLoaded', async () => {
       tableBody.appendChild(tr);
     });
 
+// Combine document alerts with maintenance alerts
+    const docRecords = documents.filter(d => d.vehicleID === vehicleID);
+    docRecords.forEach(doc => {
+      const expiry = new Date(doc.expiryDate);
+      const remainingDays = Math.ceil((expiry - today) / 86400000);
+      if (remainingDays <= 0) {
+        alerts.push({ text: `${doc.documentType} expired`, type: 'document', danger: true });
+      } else if (remainingDays <= 30) {
+        alerts.push({ text: `${doc.documentType} expiring in ${remainingDays} days`, type: 'document' });
+      }
+    });
+
+    // Optionally sort alerts
+    function priority(alert) {
+      if (alert.danger) return 1;
+      if (alert.text.includes('Due')) return 2;
+      return 3;
+    }
+    alerts.sort((a, b) => priority(a) - priority(b));
+    
+
     const alertBox = document.querySelector('.alertBox');
+    const gallery = document.getElementById('imageGallery');
+
     if (alerts.length) {
+      const html = alerts.map(a => {
+        const icon = a.type === 'document' ? 'doc.svg' : 'maintenance.svg';
+        const dangerClass = a.danger ? 'danger' : '';
+        return `<div class="alertItem ${dangerClass}"><img src="images/icons/${icon}" alt="">&nbsp; ${a.text}</div>`;
+      }).join('');
+
       if (!alertBox) {
         const newAlert = document.createElement('div');
         newAlert.className = 'alertBox';
-        newAlert.innerHTML = alerts.map(a => `<p>${a}</p>`).join('');
-        maintenanceTable.parentElement.prepend(newAlert);
+        newAlert.innerHTML = html;
+        gallery.insertAdjacentElement('afterend', newAlert);
       } else {
-        alertBox.innerHTML = alerts.map(a => `<p>${a}</p>`).join('');
+        alertBox.innerHTML = html;
       }
     }
   }
@@ -231,6 +267,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     reports.sort((a, b) => new Date(b.date) - new Date(a.date));
     reports.forEach(r => {
       const li = document.createElement('li');
+
+      if (remainingDays <= 0) {
+        li.classList.add('danger');
+      } else if (remainingDays <= 30) {
+        li.classList.add('warning');
+      }
+
       li.innerHTML = `<div class="issueLabel">on ${r.date} ${r.reporter ? `by ${r.reporter}` : ''}</div>${r.issue}`;
       issueList.appendChild(li);
     });
@@ -273,6 +316,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       const expiry = new Date(doc.expiryDate);
       const remainingDays = Math.ceil((expiry - today) / 86400000);
       const li = document.createElement('li');
+    
+      // ✅ Apply warning or danger classes
+      if (remainingDays <= 0) {
+        li.classList.add('danger');
+      } else if (remainingDays <= 30) {
+        li.classList.add('warning');
+      }
+    
       li.innerHTML = `
         <div class="docLabel">${doc.documentType}</div>
         <div class="docExpiry">
@@ -293,9 +344,10 @@ document.addEventListener('DOMContentLoaded', async () => {
               <span class="issueLabel">Notes: &nbsp;</span> 
               <span>${doc.notes ? `${doc.notes}` : ''}</span>
             </div>
+          </div>
         </div>`;
       documentList.appendChild(li);
-    });
+    });    
   }
 });
 

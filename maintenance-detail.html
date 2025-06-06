@@ -7,16 +7,17 @@
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <div class="pageHeader">
-    <h1 id="pageTitle">Maintenance Details</h1>
-    <a href="index.html" class="backBtn">← Back</a>
+  <div class="pageHead" id="maintTab">
+    <div class="titleBar">
+      <div class="titleBtn"><a href="index.html"><img src="images/icons/back.svg" alt="">&nbsp; Back</a></div>
+    </div>
   </div>
-
+  <h1 id="pageTitle">Maintenance Detail</h1>
   <div class="summaryBox">
-    <p><strong>Vehicle:</strong> <span id="vehicleName">Loading...</span></p>
-    <p><strong>Odometer:</strong> <span id="odoReading">—</span></p>
-    <p><strong>Date:</strong> <span id="maintDate">—</span></p>
-    <p><strong>Total Cost:</strong> ₹ <span id="totalCost">—</span></p>
+    <div class="summaryItem"><div class="label">Vehicle:</div> <div id="vehicleName">Loading...</div></div>
+    <div class="summaryItem"><div class="label">Odometer:</div> <div id="odoReading">—</div></div>
+    <div class="summaryItem"><div class="label">Date:</div> <div id="maintDate">—</div></div>
+    <div class="summaryItem"><div class="label">Total Cost:</div> <div id="totalCost"></div></div>
   </div>
 
   <table class="maintenanceTable">
