@@ -67,8 +67,7 @@ button {
   z-index: -1;
   width: 100%;
   height: 100vh;
-  /* background-image: linear-gradient(to bottom right, #6840DF, #181D3D); */
-  background-color: var(--dark-blue);
+  background: linear-gradient(147deg,rgba(104, 64, 223, 1) 0%, rgba(24, 29, 61, 1) 39%, rgba(24, 29, 61, 1) 100%);
 }
 
 /* COMMONS */
